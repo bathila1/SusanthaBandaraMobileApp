@@ -56,3 +56,35 @@ export const updateProfile = async (data) => {
   });
   return res.json();
 };
+
+export const getVod = async (user_id, meeting_id) => {
+  try {
+    const res = await fetch(`${BASE_URL}/vod.php?user_id=${user_id}&meeting_id=${meeting_id}`);
+    const text = await res.text();
+    return JSON.parse(text);
+  } catch (e) {
+    console.log('getVod error:', e);
+    return {success: false, message: 'Server error'};
+  }
+};
+
+export const useChance = async (user_id, meeting_id) => {
+  try {
+    const res = await fetch(`${BASE_URL}/use_chance.php`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({user_id, meeting_id}),
+    });
+    const text = await res.text();
+    console.log('useChance response:', text);
+    return JSON.parse(text);
+  } catch (e) {
+    console.log('useChance error:', e);
+    return {success: false, message: 'Server error'};
+  }
+};
+
+export const getZoomLink = async (user_id, meeting_id) => {
+  const res = await fetch(`${BASE_URL}/zoom_link.php?user_id=${user_id}&meeting_id=${meeting_id}`);
+  return res.json();
+};

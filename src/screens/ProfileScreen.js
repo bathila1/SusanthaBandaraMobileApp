@@ -98,10 +98,10 @@ export default function ProfileScreen({ navigation }) {
         <TextInput
           style={styles.input}
           value={whatsapp}
-          onChangeText={setWhatsapp}
+          onChangeText={v => setWhatsapp(v.replace(/[^0-9]/g, ''))}
           keyboardType="phone-pad"
+          maxLength={10}
         />
-
         <Text style={styles.label}>Address</Text>
         <TextInput
           style={styles.input}

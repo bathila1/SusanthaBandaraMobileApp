@@ -1,4 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
+
+import { WebView } from 'react-native-webview';
 import { useCallback } from 'react';
 import React, { useEffect, useState } from 'react';
 import {
@@ -11,6 +13,8 @@ import {
   Alert,
   RefreshControl,
   ScrollView,
+  Image,
+  Modal,
 } from 'react-native';
 
 import { getClasses } from '../api/api';
@@ -53,7 +57,7 @@ const getStatusColor = status => {
 const getStatusText = status => {
   switch (status) {
     case 'Paid':
-      return '✓ Paid - Thank You!';
+      return '✓ Paid';
     case 'Free':
       return '✓ Free Card!';
     case 'PostPay':
@@ -67,16 +71,16 @@ const getStatusText = status => {
   }
 };
 
-
 export default function DashboardScreen({ navigation }) {
   const { user, logout } = useAuth();
-if (!user) return null;
+  if (!user) return null;
 
   const now = new Date();
   const [selectedMonth, setSelectedMonth] = useState(MONTHS[now.getMonth()]);
   const [selectedYear] = useState(String(now.getFullYear()));
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showBank, setShowBank] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchClasses = async (isRefresh = false) => {
@@ -96,18 +100,18 @@ if (!user) return null;
     isRefresh ? setRefreshing(false) : setLoading(false);
   };
 
-useFocusEffect(
-  useCallback(() => {
-    if (!user) return;
-    fetchClasses(false, selectedMonth);
-
-    const interval = setInterval(() => {
+  useFocusEffect(
+    useCallback(() => {
+      if (!user) return;
       fetchClasses(false, selectedMonth);
-    }, 5 * 60 * 1000);
 
-    return () => clearInterval(interval);
-  }, [selectedMonth, user?.grade])
-);
+      const interval = setInterval(() => {
+        fetchClasses(false, selectedMonth);
+      }, 5 * 60 * 1000);
+
+      return () => clearInterval(interval);
+    }, [selectedMonth, user?.grade]),
+  );
 
   const [showMonthDrop, setShowMonthDrop] = useState(false);
 
@@ -237,6 +241,29 @@ useFocusEffect(
           </TouchableOpacity>
         </View>
       </View>
+      <TouchableOpacity
+        onPress={() => setShowBank(true)}
+        style={[
+          {
+            fontSize: 13,
+            fontWeight: 'bold',
+            color: '#ffffff',
+            borderColor: '#eeff00',
+            margin: 10,
+            backgroundColor: '#e60400',
+            borderWidth: 1,
+            borderRadius: 6,
+            paddingVertical: 4,
+            paddingHorizontal: 10,
+            alignSelf: 'flex-start',
+          
+          },
+        ]}
+      >
+        <Text style={[styles.headerBtnTxt, { color: '#ffffff' }]}>
+          🏦 Bank Details
+        </Text>
+      </TouchableOpacity>
       {/* <View>
         <TouchableOpacity
           onPress={() => fetchClasses()}
@@ -292,11 +319,101 @@ useFocusEffect(
           />
         )}
       </View>
+      <Modal visible={showBank} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalBox}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Bank Details</Text>
+              <TouchableOpacity onPress={() => setShowBank(false)}>
+                <Text style={styles.modalCloseX}>✕</Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.zoomHint}>Pinch to zoom</Text>
+            <View style={styles.webviewContainer}>
+              <WebView
+                source={{
+                  html: `
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+              <style>
+                * { margin:0; padding:0; background:#fff; }
+                body { display:flex; justify-content:center; align-items:center; min-height:100vh; }
+                img { width:100%; height:auto; }
+              </style>
+            </head>
+            <body>
+              <img src="https://susanthabandara.com/assets/img/bank_slip.png" />
+            </body>
+            </html>
+          `,
+                }}
+                style={styles.webview}
+                scalesPageToFit={false}
+                scrollEnabled
+                javaScriptEnabled
+              />
+            </View>
+            <TouchableOpacity
+              style={styles.modalClose}
+              onPress={() => setShowBank(false)}
+            >
+              <Text style={styles.modalCloseTxt}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  modalBox: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    width: '100%',
+    maxHeight: '90%',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  modalTitle: { fontSize: 16, fontWeight: 'bold', color: '#333' },
+  modalCloseX: { fontSize: 18, color: '#888', padding: 4 },
+  zoomHint: {
+    fontSize: 11,
+    color: '#aaa',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  webviewContainer: {
+    height: 400,
+    borderRadius: 8,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#eee',
+  },
+  webview: { flex: 1 },
+  modalClose: {
+    marginTop: 12,
+    backgroundColor: '#5cb85c',
+    borderRadius: 8,
+    padding: 12,
+    alignItems: 'center',
+  },
+  modalCloseTxt: { color: '#fff', fontWeight: 'bold', fontSize: 15 },
+
   container: { flex: 1, backgroundColor: '#f5f5f5' },
   header: {
     backgroundColor: '#fff',
