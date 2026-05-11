@@ -78,6 +78,7 @@ export default function RegisterScreen({ navigation }) {
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
+<<<<<<< HEAD
       <ScrollView contentContainerStyle={styles.container}>
         <Image
           source={{
@@ -90,6 +91,20 @@ export default function RegisterScreen({ navigation }) {
         <Text style={styles.title}>Register</Text>
         <Text style={styles.subtitle}>susanthabandara.com</Text>
 
+=======
+      <Image
+        source={{
+          uri: 'https://ik.imagekit.io/bathila/susanthabandara_com_indexPg/logo_croped_-m3LOejv-.webp?ik-sdk-version=javascript-1.4.3&updatedAt=1663696508876',
+        }}
+        style={styles.logo}
+        resizeMode="contain"
+      />
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>Register</Text>
+        <Text style={styles.subtitle}>susanthabandara.com</Text>
+
+        {/* Step indicators */}
+>>>>>>> 10eed93dd12f4ecd153175993d594a0d220ca4f4
         <View style={styles.steps}>
           {[1, 2, 3].map(s => (
             <View
@@ -98,11 +113,16 @@ export default function RegisterScreen({ navigation }) {
             />
           ))}
         </View>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 10eed93dd12f4ecd153175993d594a0d220ca4f4
         <Text style={styles.stepLabel}>Step {step} of 3</Text>
 
         {step === 1 && (
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>Name</Text>
+<<<<<<< HEAD
             <Text style={styles.label}>First Name</Text>
             <TextInput
               style={styles.input}
@@ -112,6 +132,17 @@ export default function RegisterScreen({ navigation }) {
             <Text style={styles.label}>Last Name</Text>
             <TextInput
               style={styles.input}
+=======
+            <TextInput
+              style={styles.input}
+              placeholder="First Name"
+              value={form.fname}
+              onChangeText={v => set('fname', v)}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Last Name"
+>>>>>>> 10eed93dd12f4ecd153175993d594a0d220ca4f4
               value={form.lname}
               onChangeText={v => set('lname', v)}
             />
@@ -121,6 +152,7 @@ export default function RegisterScreen({ navigation }) {
         {step === 2 && (
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>Personal Info</Text>
+<<<<<<< HEAD
             <Text style={styles.label}>School</Text>
             <TextInput
               style={styles.input}
@@ -136,6 +168,23 @@ export default function RegisterScreen({ navigation }) {
             <Text style={styles.label}>WhatsApp Number</Text>
             <TextInput
               style={styles.input}
+=======
+            <TextInput
+              style={styles.input}
+              placeholder="School"
+              value={form.school}
+              onChangeText={v => set('school', v)}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Address"
+              value={form.address}
+              onChangeText={v => set('address', v)}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="WhatsApp Number"
+>>>>>>> 10eed93dd12f4ecd153175993d594a0d220ca4f4
               value={form.whatsapp_no}
               onChangeText={v => set('whatsapp_no', v.replace(/[^0-9]/g, ''))}
               keyboardType="phone-pad"
@@ -147,6 +196,10 @@ export default function RegisterScreen({ navigation }) {
         {step === 3 && (
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>Login Info</Text>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 10eed93dd12f4ecd153175993d594a0d220ca4f4
             <Text style={styles.label}>Select Grade</Text>
             <View style={styles.gradeRow}>
               {grades.map(g => (
@@ -169,24 +222,43 @@ export default function RegisterScreen({ navigation }) {
                 </TouchableOpacity>
               ))}
             </View>
+<<<<<<< HEAD
             <Text style={styles.label}>Email</Text>
             <TextInput
               style={styles.input}
+=======
+
+            <TextInput
+              style={styles.input}
+              placeholder="Email or Username"
+>>>>>>> 10eed93dd12f4ecd153175993d594a0d220ca4f4
               value={form.email}
               onChangeText={v => set('email', v)}
               autoCapitalize="none"
               keyboardType="email-address"
             />
+<<<<<<< HEAD
             <Text style={styles.label}>Password (min 6 characters)</Text>
             <TextInput
               style={styles.input}
+=======
+            <TextInput
+              style={styles.input}
+              placeholder="Password (min 6 characters)"
+>>>>>>> 10eed93dd12f4ecd153175993d594a0d220ca4f4
               value={form.password}
               onChangeText={v => set('password', v)}
               secureTextEntry
             />
+<<<<<<< HEAD
             <Text style={styles.label}>Confirm Password</Text>
             <TextInput
               style={styles.input}
+=======
+            <TextInput
+              style={styles.input}
+              placeholder="Confirm Password"
+>>>>>>> 10eed93dd12f4ecd153175993d594a0d220ca4f4
               value={form.c_password}
               onChangeText={v => set('c_password', v)}
               secureTextEntry
@@ -228,6 +300,7 @@ export default function RegisterScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flexGrow: 1, padding: 24, backgroundColor: '#f5f5f5' },
+<<<<<<< HEAD
   logo: {
     width: 180,
     height: 180,
@@ -235,12 +308,18 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 4,
   },
+=======
+>>>>>>> 10eed93dd12f4ecd153175993d594a0d220ca4f4
   title: {
     fontSize: 26,
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#e05555',
+<<<<<<< HEAD
     marginTop: 10,
+=======
+    marginTop: 40,
+>>>>>>> 10eed93dd12f4ecd153175993d594a0d220ca4f4
   },
   subtitle: {
     fontSize: 13,
@@ -275,7 +354,11 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 12,
   },
+<<<<<<< HEAD
   label: { fontSize: 13, color: '#555', fontWeight: '600', marginBottom: 4 },
+=======
+  label: { fontSize: 13, color: '#666', marginBottom: 8 },
+>>>>>>> 10eed93dd12f4ecd153175993d594a0d220ca4f4
   input: {
     borderWidth: 1,
     borderColor: '#ddd',
@@ -311,4 +394,13 @@ const styles = StyleSheet.create({
   },
   buttonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
   link: { textAlign: 'center', color: '#5cb85c', fontSize: 14, marginTop: 10 },
+<<<<<<< HEAD
+=======
+
+  logo: {
+  width: 200, height: 200,
+  alignSelf: 'center',
+  marginTop: 40, marginBottom: -10,
+},
+>>>>>>> 10eed93dd12f4ecd153175993d594a0d220ca4f4
 });
