@@ -9,6 +9,8 @@ import {
   Alert,
   ActivityIndicator,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 
@@ -59,76 +61,87 @@ export default function ProfileScreen({ navigation }) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.back}>
-        <Text style={styles.backText}>← Back</Text>
-      </TouchableOpacity>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView contentContainerStyle={styles.container}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.back}
+        >
+          <Text style={styles.backText}>← Back</Text>
+        </TouchableOpacity>
 
-      <Text style={styles.title}>My Profile</Text>
+        <Text style={styles.title}>My Profile</Text>
 
-      <View style={styles.card}>
-        <Text style={styles.label}>Full Name</Text>
-        <TextInput style={styles.input} value={name} onChangeText={setName} />
+        <View style={styles.card}>
+          <Text style={styles.label}>Full Name</Text>
+          <TextInput style={styles.input} value={name} onChangeText={setName} />
 
-        <Text style={styles.label}>Select Grade</Text>
-        <View style={styles.gradeRow}>
-          {grades.map(g => (
-            <TouchableOpacity
-              key={g}
-              style={[styles.gradeBtn, grade === g && styles.gradeBtnActive]}
-              onPress={() => setGrade(g)}
-            >
-              <Text
-                style={[styles.gradeTxt, grade === g && styles.gradeTxtActive]}
+          <Text style={styles.label}>Select Grade</Text>
+          <View style={styles.gradeRow}>
+            {grades.map(g => (
+              <TouchableOpacity
+                key={g}
+                style={[styles.gradeBtn, grade === g && styles.gradeBtnActive]}
+                onPress={() => setGrade(g)}
               >
-                {g}
-              </Text>
-            </TouchableOpacity>
-          ))}
+                <Text
+                  style={[
+                    styles.gradeTxt,
+                    grade === g && styles.gradeTxtActive,
+                  ]}
+                >
+                  {g}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <Text style={styles.label}>School</Text>
+          <TextInput
+            style={styles.input}
+            value={school}
+            onChangeText={setSchool}
+          />
+
+          <Text style={styles.label}>WhatsApp No</Text>
+          <TextInput
+            style={styles.input}
+            value={whatsapp}
+            onChangeText={v => setWhatsapp(v.replace(/[^0-9]/g, ''))}
+            keyboardType="phone-pad"
+            maxLength={10}
+          />
+          <Text style={styles.label}>Address</Text>
+          <TextInput
+            style={styles.input}
+            value={address}
+            onChangeText={setAddress}
+          />
+
+          <Text style={styles.label}>Email</Text>
+          <Text style={styles.readOnly}>{user.email}</Text>
         </View>
 
-        <Text style={styles.label}>School</Text>
-        <TextInput
-          style={styles.input}
-          value={school}
-          onChangeText={setSchool}
-        />
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleSave}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.buttonText}>Save Changes</Text>
+          )}
+        </TouchableOpacity>
 
-        <Text style={styles.label}>WhatsApp No</Text>
-        <TextInput
-          style={styles.input}
-          value={whatsapp}
-          onChangeText={v => setWhatsapp(v.replace(/[^0-9]/g, ''))}
-          keyboardType="phone-pad"
-          maxLength={10}
-        />
-        <Text style={styles.label}>Address</Text>
-        <TextInput
-          style={styles.input}
-          value={address}
-          onChangeText={setAddress}
-        />
-
-        <Text style={styles.label}>Email</Text>
-        <Text style={styles.readOnly}>{user.email}</Text>
-      </View>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleSave}
-        disabled={loading}
-      >
-        {loading ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.buttonText}>Save Changes</Text>
-        )}
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.logoutButton} onPress={logout}>
-        <Text style={styles.logoutText}>Log Out</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+          <Text style={styles.logoutText}>Log Out</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 

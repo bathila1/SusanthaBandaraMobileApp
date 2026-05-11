@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ActivityIndicator} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, StatusBar, SafeAreaView} from 'react-native';
 import {WebView} from 'react-native-webview';
 
 export default function VideoPlayerScreen({route, navigation}) {
@@ -9,14 +9,17 @@ export default function VideoPlayerScreen({route, navigation}) {
   const encoded = btoa(unescape(encodeURIComponent(embedUrl)));
   const playerUrl = `https://susanthabandara.com/player.php?e=${encoded}`;
 
+  useEffect(() => {
+    StatusBar.setHidden(true);
+    return () => StatusBar.setHidden(false);
+  }, []);
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.back}>← Back</Text>
-        </TouchableOpacity>
-        <Text style={styles.title} numberOfLines={1}>{title}</Text>
-      </View>
+      {/* Back button overlay on top of video */}
+      <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
+        <Text style={styles.back}>← Back</Text>
+      </TouchableOpacity>
 
       {loading && (
         <View style={styles.loadingOverlay}>
@@ -35,7 +38,6 @@ export default function VideoPlayerScreen({route, navigation}) {
         originWhitelist={['*']}
         setSupportMultipleWindows={false}
         onShouldStartLoadWithRequest={(request) => {
-          // only allow susanthabandara.com and vimeo player
           const url = request.url;
           if (
             url.startsWith('https://susanthabandara.com') ||
@@ -54,16 +56,24 @@ export default function VideoPlayerScreen({route, navigation}) {
 
 const styles = StyleSheet.create({
   container: {flex: 1, backgroundColor: '#000'},
-  header: {
-    flexDirection: 'row', alignItems: 'center',
-    padding: 16, paddingTop: 50,
-    backgroundColor: '#111', gap: 12,
+  backBtn: {
+    position: 'absolute',
+    top: 40,
+    left: 16,
+    zIndex: 10,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
   },
-  back: {color: '#5cb85c', fontSize: 15},
-  title: {color: '#fff', fontSize: 15, fontWeight: '600', flex: 1},
+  back: {color: '#fff', fontSize: 14, fontWeight: '600'},
   player: {flex: 1, backgroundColor: '#000'},
   loadingOverlay: {
-    position: 'absolute', top: 100, left: 0, right: 0, bottom: 0,
-    justifyContent: 'center', alignItems: 'center', zIndex: 10,
+    position: 'absolute',
+    top: 0, left: 0, right: 0, bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 5,
+    backgroundColor: '#000',
   },
 });
