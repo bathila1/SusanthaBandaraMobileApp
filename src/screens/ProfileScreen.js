@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { updateProfile } from '../api/api';
 import React, { useState } from 'react';
 import {
@@ -41,14 +42,13 @@ export default function ProfileScreen({ navigation }) {
         address,
       });
       if (res.success) {
-        await login({
-          ...user,
-          name,
-          grade,
-          school,
-          whatsapp_no: whatsapp,
-          address,
-        });
+        const accessToken = await AsyncStorage.getItem('access_token');
+        const refreshToken = await AsyncStorage.getItem('refresh_token');
+        await login(
+          { ...user, name, grade, school, whatsapp_no: whatsapp, address },
+          accessToken,
+          refreshToken,
+        );
         Alert.alert('Success', 'Profile updated');
         navigation.goBack();
       } else {

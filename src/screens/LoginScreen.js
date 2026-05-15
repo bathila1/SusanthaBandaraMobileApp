@@ -13,21 +13,21 @@ export default function LoginScreen({navigation}) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
-    if (!email || !password) return Alert.alert('Error', 'Fill all fields');
-    setLoading(true);
-    try {
-      const res = await loginUser(email, password);
-      if (res.success) {
-        await login(res.user);
-      } else {
-        Alert.alert('Error', res.message || 'Login failed');
-      }
-    } catch (e) {
-      Alert.alert('Error', 'Cannot connect to server');
+const handleLogin = async () => {
+  if (!email || !password) return Alert.alert('Error', 'Fill all fields');
+  setLoading(true);
+  try {
+    const res = await loginUser(email, password);
+    if (res.success) {
+      await login(res.user, res.access_token, res.refresh_token);
+    } else {
+      Alert.alert('Error', res.message || 'Login failed');
     }
-    setLoading(false);
-  };
+  } catch (e) {
+    Alert.alert('Error', 'Cannot connect to server');
+  }
+  setLoading(false);
+};
 
   return (
     <KeyboardAvoidingView

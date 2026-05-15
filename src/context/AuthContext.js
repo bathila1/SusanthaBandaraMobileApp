@@ -6,14 +6,16 @@ const AuthContext = createContext();
 export const AuthProvider = ({children}) => {
   const [user, setUser] = useState(null);
 
-  const login = async (userData) => {
+  const login = async (userData, accessToken, refreshToken) => {
     setUser(userData);
     await AsyncStorage.setItem('user', JSON.stringify(userData));
+    if (accessToken) await AsyncStorage.setItem('access_token', accessToken);
+    if (refreshToken) await AsyncStorage.setItem('refresh_token', refreshToken);
   };
 
   const logout = async () => {
     setUser(null);
-    await AsyncStorage.removeItem('user');
+    await AsyncStorage.multiRemove(['user', 'access_token', 'refresh_token']);
   };
 
   const loadUser = async () => {
