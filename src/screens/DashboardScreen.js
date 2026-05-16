@@ -73,15 +73,25 @@ const getStatusText = status => {
 
 export default function DashboardScreen({ navigation }) {
   const { user, logout } = useAuth();
-  if (!user) return null;
 
   const now = new Date();
   const [selectedMonth, setSelectedMonth] = useState(MONTHS[now.getMonth()]);
-  const [selectedYear] = useState(String(now.getFullYear()));
+  const [selectedYear, setSelectedYear] = useState(String(now.getFullYear()));
+  const [showYearDrop, setShowYearDrop] = useState(false);
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showBank, setShowBank] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [showMonthDrop, setShowMonthDrop] = useState(false);
+
+  const YEARS = (() => {
+    const current = new Date().getFullYear();
+    const list = [];
+    for (let y = current - 5; y <= current + 1; y++) {
+      list.push(String(y));
+    }
+    return list;
+  })();
 
   const fetchClasses = async (isRefresh = false) => {
     isRefresh ? setRefreshing(true) : setLoading(true);
@@ -99,30 +109,43 @@ export default function DashboardScreen({ navigation }) {
     }
     isRefresh ? setRefreshing(false) : setLoading(false);
   };
-
   useFocusEffect(
     useCallback(() => {
       if (!user) return;
       fetchClasses(false, selectedMonth);
-
       const interval = setInterval(() => {
         fetchClasses(false, selectedMonth);
       }, 5 * 60 * 1000);
-
       return () => clearInterval(interval);
-    }, [selectedMonth, user?.grade]),
+    }, [selectedMonth, selectedYear, user?.grade]),
   );
+  if (!user) return null;
 
-  const [showMonthDrop, setShowMonthDrop] = useState(false);
 
-  const renderMonthPicker = () => (
+  const renderMonthYearPicker = () => (
     <View style={styles.dropdownWrapper}>
-      <TouchableOpacity
-        style={styles.dropdownBtn}
-        onPress={() => setShowMonthDrop(!showMonthDrop)}
-      >
-        <Text style={styles.dropdownBtnTxt}>{selectedMonth} ▾</Text>
-      </TouchableOpacity>
+      <View style={{ flexDirection: 'row' }}>
+        <TouchableOpacity
+          style={styles.dropdownBtn}
+          onPress={() => {
+            setShowMonthDrop(!showMonthDrop);
+            setShowYearDrop(false);
+          }}
+        >
+          <Text style={styles.dropdownBtnTxt}>{selectedMonth} ▾</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.dropdownBtn}
+          onPress={() => {
+            setShowYearDrop(!showYearDrop);
+            setShowMonthDrop(false);
+          }}
+        >
+          <Text style={styles.dropdownBtnTxt}>{selectedYear} ▾</Text>
+        </TouchableOpacity>
+      </View>
+
       {showMonthDrop && (
         <View style={styles.dropdownList}>
           <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}>
@@ -136,7 +159,6 @@ export default function DashboardScreen({ navigation }) {
                 onPress={() => {
                   setSelectedMonth(m);
                   setShowMonthDrop(false);
-                  // fetchClasses(false, m); // ← pass new month directly
                 }}
               >
                 <Text
@@ -146,6 +168,35 @@ export default function DashboardScreen({ navigation }) {
                   ]}
                 >
                   {m}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+      )}
+
+      {showYearDrop && (
+        <View style={[styles.dropdownList, { left: 130, width: 120 }]}>
+          <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}>
+            {YEARS.map(y => (
+              <TouchableOpacity
+                key={y}
+                style={[
+                  styles.dropdownItem,
+                  selectedYear === y && styles.dropdownItemActive,
+                ]}
+                onPress={() => {
+                  setSelectedYear(y);
+                  setShowYearDrop(false);
+                }}
+              >
+                <Text
+                  style={[
+                    styles.dropdownItemTxt,
+                    selectedYear === y && styles.dropdownItemTxtActive,
+                  ]}
+                >
+                  {y}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -212,7 +263,9 @@ export default function DashboardScreen({ navigation }) {
       {/* Header */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.welcome}>Hi, {user.name}</Text>
+          <Text style={styles.welcome} numberOfLines={1}>
+            Hi, {user.name?.split(' ')[0]}
+          </Text>
           <Text style={styles.gradeText}>
             Grade {user.grade} • {selectedYear}
           </Text>
@@ -224,13 +277,7 @@ export default function DashboardScreen({ navigation }) {
           >
             <Text style={styles.headerBtnTxt}>Profile</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => fetchClasses(false, selectedMonth)}
-            style={styles.headerBtn}
-            disabled={loading}
-          >
-            <Text style={styles.headerBtnTxt}>↻ Refresh</Text>
-          </TouchableOpacity>
+
           <TouchableOpacity
             onPress={logout}
             style={[styles.headerBtn, { borderColor: '#d9534f' }]}
@@ -256,7 +303,6 @@ export default function DashboardScreen({ navigation }) {
             paddingVertical: 4,
             paddingHorizontal: 10,
             alignSelf: 'flex-start',
-          
           },
         ]}
       >
@@ -264,33 +310,32 @@ export default function DashboardScreen({ navigation }) {
           🏦 Bank Details
         </Text>
       </TouchableOpacity>
-      {/* <View>
-        <TouchableOpacity
-          onPress={() => fetchClasses()}
-          style={{
-            borderWidth: 1,
-            borderRadius: 6,
-            paddingVertical: 4,
-            paddingHorizontal: 10,
-            alignSelf: 'flex-start',
-            margin: 10,
-            borderColor: '#006eff',
-            backgroundColor: '#f0f0f0', 
-            color: '#000000',
-            fontWeight: 'bold',
-            fontSize: 13,
-            textAlign: 'center',
-          }}
-          disabled={loading}
-        >
-          <Text style={styles.headerBtnTxt}>↻ Refresh</Text>
-        </TouchableOpacity>
-      </View> */}
+      <TouchableOpacity
+        onPress={() => fetchClasses(false, selectedMonth)}
+        style={{
+          borderWidth: 1,
+          borderRadius: 6,
+          paddingVertical: 4,
+          paddingHorizontal: 10,
+          alignSelf: 'flex-start',
+          margin: 10,
+          marginTop: 0,
+          borderColor: '#000000',
+          backgroundColor: '#00faed',
+          color: '#000000',
+          fontWeight: 'bold',
+          fontSize: 13,
+          textAlign: 'center',
+        }}
+        disabled={loading}
+      >
+        <Text>↻ Refresh</Text>
+      </TouchableOpacity>
 
       {/* Month picker */}
       {/* height is normal */}
 
-      {renderMonthPicker()}
+      {renderMonthYearPicker()}
 
       {/* Class List */}
       <View style={{ flex: 1, zIndex: 0 }}>
@@ -425,7 +470,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#eee',
   },
-  welcome: { fontSize: 18, fontWeight: 'bold', color: '#333' },
+  welcome: { fontSize: 18, fontWeight: 'bold', color: '#333', maxWidth: 180 },
   gradeText: { fontSize: 13, color: '#888', marginTop: 2 },
   headerBtns: { gap: 6 },
   headerBtn: {

@@ -436,10 +436,19 @@ export default function ClassDetailScreen({ route, navigation }) {
               />
             </View>
           )}
+          {status === 'Pending' && !uploadedPayslip && (
+            <Text style={styles.pendingNote}>
+              ඔබට Payment කිරීමට නොහැකි වූ නමුත්, Class එකට Join වීමට අවශ්‍ය නම්
+              සර්ට Call(0766563000) එකක් දී PostPay ලබා ගන්න. Call කරන
+              සියල්ලටම Class එකට Join වීමට ලබා දේ. Call කළ පසු access ලබා
+              දුන් පසු Refresh Button එක click කරන්න.
+            </Text>
+          )}
+          
           <Text style={styles.sectionTitle}>Upload Payment Receipt</Text>
-          <Text style={styles.hint}>
+          {/* <Text style={styles.hint}>
             Choose your bank receipt photo and upload.
-          </Text>
+          </Text> */}
           <TouchableOpacity style={styles.chooseFile} onPress={pickImage}>
             <Text style={styles.chooseFileText}>
               {image ? '✓ ' + image.fileName : '📷 Choose Payslip'}
@@ -456,14 +465,7 @@ export default function ClassDetailScreen({ route, navigation }) {
               <Text style={styles.uploadText}>Submit</Text>
             )}
           </TouchableOpacity>
-          {status === 'Pending' && (
-            <Text style={styles.pendingNote}>
-              ඔබට Payment කිරීමට අමතක වූ නමුත්, Class එකට Join වීමට අවශ්‍ය නම්
-              සර්ට Call එකක් දී PostPay ලබා ගන්න. ( 0766563000 ) Call කරන
-              සියල්ලටම Class එකට Join වීමට හැකියාව ලැබේ. Call කළ පසු access ලබා
-              දුන් පසු Refresh Button එක click කරන්න
-            </Text>
-          )}
+          
         </View>
       )}
     </ScrollView>

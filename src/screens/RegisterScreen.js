@@ -33,8 +33,10 @@ export default function RegisterScreen({ navigation }) {
 
   const nextStep = () => {
     if (step === 1) {
-      if (!form.fname.trim() || !form.lname.trim())
-        return Alert.alert('Error', 'Enter your first and last name');
+      if (!form.fname.trim() || !form.lname.trim()) {
+        return Alert.alert('Enter your first and last name');
+      }
+      if (!form.grade) return Alert.alert('Please select a grade');
     }
     if (step === 2) {
       if (
@@ -42,18 +44,18 @@ export default function RegisterScreen({ navigation }) {
         !form.address.trim() ||
         !form.whatsapp_no.trim()
       )
-        return Alert.alert('Error', 'Fill all fields');
+        return Alert.alert('Fill all fields');
     }
     setStep(step + 1);
   };
 
   const handleRegister = async () => {
-    if (!form.grade) return Alert.alert('Error', 'Please select a grade');
-    if (!form.email.trim()) return Alert.alert('Error', 'Enter your email');
+    if (!form.grade) return Alert.alert('Please select a grade');
+    if (!form.email.trim()) return Alert.alert('Enter your email');
     if (form.password.length < 6)
-      return Alert.alert('Error', 'Password must be at least 6 characters');
+      return Alert.alert('Password must be at least 6 characters');
     if (form.password !== form.c_password)
-      return Alert.alert('Error', 'Passwords do not match');
+      return Alert.alert('Passwords do not match');
 
     setLoading(true);
     try {
@@ -102,7 +104,6 @@ export default function RegisterScreen({ navigation }) {
 
         {step === 1 && (
           <View style={styles.card}>
-            <Text style={styles.sectionTitle}>Name</Text>
             <Text style={styles.label}>First Name</Text>
             <TextInput
               style={styles.input}
@@ -115,12 +116,33 @@ export default function RegisterScreen({ navigation }) {
               value={form.lname}
               onChangeText={v => set('lname', v)}
             />
+            <Text style={styles.label}>Select Grade</Text>
+            <View style={styles.gradeRow}>
+              {grades.map(g => (
+                <TouchableOpacity
+                  key={g}
+                  style={[
+                    styles.gradeBtn,
+                    form.grade === g && styles.gradeBtnActive,
+                  ]}
+                  onPress={() => set('grade', g)}
+                >
+                  <Text
+                    style={[
+                      styles.gradeTxt,
+                      form.grade === g && styles.gradeTxtActive,
+                    ]}
+                  >
+                    {g}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
         )}
 
         {step === 2 && (
           <View style={styles.card}>
-            <Text style={styles.sectionTitle}>Personal Info</Text>
             <Text style={styles.label}>School</Text>
             <TextInput
               style={styles.input}
@@ -146,30 +168,13 @@ export default function RegisterScreen({ navigation }) {
 
         {step === 3 && (
           <View style={styles.card}>
-            <Text style={styles.sectionTitle}>Login Info</Text>
-            <Text style={styles.label}>Select Grade</Text>
-            <View style={styles.gradeRow}>
-              {grades.map(g => (
-                <TouchableOpacity
-                  key={g}
-                  style={[
-                    styles.gradeBtn,
-                    form.grade === g && styles.gradeBtnActive,
-                  ]}
-                  onPress={() => set('grade', g)}
-                >
-                  <Text
-                    style={[
-                      styles.gradeTxt,
-                      form.grade === g && styles.gradeTxtActive,
-                    ]}
-                  >
-                    {g}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            <Text style={styles.label}>Email</Text>
+            <Text style={styles.subtitle}>
+              ඔබගේ සත්‍ය Google Email එකෙහි Email/Password අවශ්‍ය නැත. මෙම
+              පද්ධතිය සඳහා මතක තබා ගැනීමට පහසු Email/Username එකක් සහ Password
+              එකක් අතුලත් කරන්න. ( Space ඇතුලත් නොකරන්න )
+            </Text>
+
+            <Text style={styles.label}>Username/Email</Text>
             <TextInput
               style={styles.input}
               value={form.email}
@@ -182,14 +187,12 @@ export default function RegisterScreen({ navigation }) {
               style={styles.input}
               value={form.password}
               onChangeText={v => set('password', v)}
-              secureTextEntry
             />
             <Text style={styles.label}>Confirm Password</Text>
             <TextInput
               style={styles.input}
               value={form.c_password}
               onChangeText={v => set('c_password', v)}
-              secureTextEntry
             />
           </View>
         )}
@@ -296,7 +299,7 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     borderRadius: 8,
     paddingVertical: 10,
-    paddingHorizontal: 18,
+    paddingHorizontal: 15,
     backgroundColor: '#f9f9f9',
   },
   gradeBtnActive: { backgroundColor: '#5cb85c', borderColor: '#5cb85c' },

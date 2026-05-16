@@ -21,6 +21,8 @@ export default function VideoPlayerScreen({route, navigation}) {
         <Text style={styles.back}>← Back</Text>
       </TouchableOpacity>
 
+      {/* Display a  */}
+
       {loading && (
         <View style={styles.loadingOverlay}>
           <ActivityIndicator size="large" color="#5cb85c" />
