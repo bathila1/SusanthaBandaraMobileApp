@@ -1,7 +1,8 @@
 # OSX
 #
 .DS_Store
-
+android/app/*.keystore
+android/gradle.properties
 # Xcode
 #
 build/

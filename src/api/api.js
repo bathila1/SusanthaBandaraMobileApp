@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = 'https://susanthabandara.com/api';
-const API_KEY = 'sb_app_2026_X9k3pQ7mN4vR8tL'; // must match config.php
+import {API_BASE_URL, API_KEY} from '@env';
+
+const BASE_URL = API_BASE_URL;
 
 // Get access token from storage
 const getToken = async () => await AsyncStorage.getItem('access_token');
